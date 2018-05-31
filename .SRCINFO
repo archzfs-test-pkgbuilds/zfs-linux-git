@@ -1,6 +1,6 @@
 pkgbase = zfs-linux-git
 	pkgver = 2018.05.30.r4572.g93491c4bb.4.16.12.1
-	pkgrel = 1
+	pkgrel = 2
 	url = http://zfsonlinux.org/
 	arch = x86_64
 	license = CDDL
@@ -19,7 +19,7 @@ pkgname = zfs-linux-git
 	provides = zfs
 	conflicts = zfs-linux
 	conflicts = spl-linux-git
-	replaces = zfs-git
+	replaces = spl-linux-git
 
 pkgname = zfs-linux-git-headers
 	pkgdesc = Kernel headers for the Zettabyte File System.
