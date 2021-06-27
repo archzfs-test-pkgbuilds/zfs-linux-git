@@ -17,9 +17,9 @@
 #
 pkgbase="zfs-linux-git"
 pkgname=("zfs-linux-git" "zfs-linux-git-headers")
-_commit='ab6a0e236e2ada3c88882b52f9060a0fdac29fec'
-_zfsver="2020.10.16.r6318.gab6a0e236"
-_kernelver="5.9.1.arch1-1"
+_commit='f20fb199e60722abc052b6034bddb6b83d870c99'
+_zfsver="2021.06.25.r6982.gf20fb199e"
+_kernelver="5.12.13.arch1-2"
 _extramodules="${_kernelver/.arch/-arch}"
 
 pkgver="${_zfsver}_$(echo ${_kernelver} | sed s/-/./g)"
@@ -27,8 +27,10 @@ pkgrel=1
 makedepends=("linux-headers=${_kernelver}" "git")
 arch=("x86_64")
 url="https://zfsonlinux.org/"
-source=("git+https://github.com/zfsonlinux/zfs.git#commit=${_commit}")
-sha256sums=("SKIP")
+source=("git+https://github.com/zfsonlinux/zfs.git#commit=${_commit}"
+              "linux-5.12-compat.patch")
+sha256sums=("SKIP"
+                        "9c601804dc473766d85da2198aa3769707e051d3659dc82dd1302edd5e91a8cf")
 license=("CDDL")
 depends=("kmod" "zfs-utils-git=${_zfsver}" "linux=${_kernelver}")
 
@@ -36,8 +38,8 @@ build() {
     cd "${srcdir}/zfs"
     ./autogen.sh
     ./configure --prefix=/usr --sysconfdir=/etc --sbindir=/usr/bin --libdir=/usr/lib \
-                --datadir=/usr/share --includedir=/usr/include --with-udevdir=/lib/udev \
-                --libexecdir=/usr/lib/zfs-${_zfsver} --with-config=kernel \
+                --datadir=/usr/share --includedir=/usr/include --with-udevdir=/usr/lib/udev \
+                --libexecdir=/usr/lib --with-config=kernel \
                 --with-linux=/usr/lib/modules/${_extramodules}/build \
                 --with-linux-obj=/usr/lib/modules/${_extramodules}/build
     make
@@ -51,9 +53,7 @@ package_zfs-linux-git() {
     conflicts=("zfs-dkms" "zfs-dkms-git" "zfs-dkms-rc" "spl-dkms" "spl-dkms-git" 'zfs-linux' 'spl-linux-git' 'spl-linux')
     replaces=("spl-linux-git")
     cd "${srcdir}/zfs"
-    make DESTDIR="${pkgdir}" install
-    cp -r "${pkgdir}"/{lib,usr}
-    rm -r "${pkgdir}"/lib
+    make DESTDIR="${pkgdir}" INSTALL_MOD_PATH=/usr install
     # Remove src dir
     rm -r "${pkgdir}"/usr/src
 }
